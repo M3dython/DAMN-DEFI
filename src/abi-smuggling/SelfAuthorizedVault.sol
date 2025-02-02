@@ -26,6 +26,7 @@ contract SelfAuthorizedVault is AuthorizedExecutor {
 
     /**
      * @notice Allows to send a limited amount of tokens to a recipient every now and then
+     * //@audit-question can I create limitless accounts and send them? Sybil attack
      * @param token address of the token to withdraw
      * @param recipient address of the tokens' recipient
      * @param amount amount of tokens to be transferred
