@@ -41,6 +41,7 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
         address singletonCopyAddress,
         address walletFactoryAddress,
         address tokenAddress,
+        //@audit-question can initialBeneficiares be too big that it causes DOS?
         address[] memory initialBeneficiaries
     ) {
         _initializeOwner(msg.sender);
@@ -107,6 +108,7 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
         }
 
         address fallbackManager = _getFallbackManager(walletAddress);
+        
         if (fallbackManager != address(0)) {
             revert InvalidFallbackManager(fallbackManager);
         }
