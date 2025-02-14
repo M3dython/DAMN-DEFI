@@ -30,6 +30,7 @@ contract SelfAuthorizedVault is AuthorizedExecutor {
      * @param recipient address of the tokens' recipient
      * @param amount amount of tokens to be transferred
      */
+     //@audit-question can I create limitless accounts and send them? Sybil attack
     function withdraw(address token, address recipient, uint256 amount) external onlyThis {
         if (amount > WITHDRAWAL_LIMIT) {
             revert InvalidWithdrawalAmount();
@@ -43,7 +44,8 @@ contract SelfAuthorizedVault is AuthorizedExecutor {
 
         SafeTransferLib.safeTransfer(token, recipient, amount);
     }
-
+    //@audit-info transfer all the tokens
+    //@audit-question can I exploit this function?
     function sweepFunds(address receiver, IERC20 token) external onlyThis {
         SafeTransferLib.safeTransfer(address(token), receiver, token.balanceOf(address(this)));
     }
