@@ -107,7 +107,7 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
         }
 
         address fallbackManager = _getFallbackManager(walletAddress);
-        
+
         if (fallbackManager != address(0)) {
             revert InvalidFallbackManager(fallbackManager);
         }

@@ -9,12 +9,15 @@ This repository contains an exploit contract designed to drain a vulnerable lend
 
 ## Table of Contents
 
-1. [Overview](#overview)  
-2. [How the Exploit Works](#how-the-exploit-works)  
-3. [Key Contract Components](#key-contract-components)  
-4. [Setup and Usage](#setup-and-usage)  
-5. [Security Considerations](#security-considerations)  
-6. [License](#license)
+- [Side Entrance Exploit](#side-entrance-exploit)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [How the Exploit Works](#how-the-exploit-works)
+  - [Key Contract Components](#key-contract-components)
+    - [Exploit Contract](#exploit-contract)
+  - [Setup and Usage](#setup-and-usage)
+  - [Security Considerations](#security-considerations)
+  - [License](#license)
 
 ---
 
@@ -23,6 +26,7 @@ This repository contains an exploit contract designed to drain a vulnerable lend
 The **SideEntranceLenderPool** contract lets users deposit ETH and withdraw it later, while also providing flash loans with no fee. The vulnerability arises from the fact that the pool counts ETH deposited during a flash loan as a valid repayment. An attacker can exploit this by borrowing the entire pool balance via a flash loan, then depositing that ETH back into the pool as repayment—thus registering a deposit that can later be withdrawn.
 
 The goal of the exploit is to:
+
 - Borrow the pool’s ETH using the flash loan facility.
 - Repay the loan by depositing the ETH back into the pool.
 - Withdraw the deposited ETH.
@@ -54,17 +58,19 @@ The goal of the exploit is to:
 ### Exploit Contract
 
 - **State Variables:**
+
   - `pool`: Reference to the vulnerable **SideEntranceLenderPool**.
   - `recovery`: Address where the drained ETH will be sent.
   - `exploitAmount`: The amount of ETH to be exploited (in this case, 1000 ETH).
 
 - **Functions:**
+
   - `attack() external returns (bool)`:  
     Initiates the flash loan, triggers the deposit during the flash loan callback, withdraws the credited ETH, and transfers the funds to the recovery address.
-  
+
   - `execute() external payable`:  
     Called by the pool during the flash loan process. It deposits the received ETH back into the pool, effectively repaying the flash loan.
-  
+
   - `receive() external payable`:  
     Fallback function to accept ETH transfers, ensuring that the contract can receive funds under any circumstances.
 
@@ -72,36 +78,42 @@ The goal of the exploit is to:
 
 ## Setup and Usage
 
-1. **Clone the Repository & Install Dependencies**  
+1. **Clone the Repository & Install Dependencies**
+
    ```bash
    git clone <this-repo-url>
    cd side-entrance-exploit
    npm install
    ```
+
    Or if using Foundry:
+
    ```bash
    forge install
    ```
 
-2. **Compile the Contracts**  
-   - For Hardhat/Truffle:  
+2. **Compile the Contracts**
+
+   - For Hardhat/Truffle:
      ```bash
      npx hardhat compile
      ```
-   - For Foundry:  
+   - For Foundry:
      ```bash
      forge build
      ```
 
-3. **Deploy the Contracts**  
+3. **Deploy the Contracts**
+
    - Deploy the **SideEntranceLenderPool** contract first and deposit 1000 ETH into it.
    - Deploy the **Exploit** contract by passing the pool’s address, the designated recovery address, and the amount (1000 ETH) to the constructor.
 
-4. **Execute the Attack**  
+4. **Execute the Attack**
+
    - From the attacker's account (starting with 1 ETH), call the `attack()` function on the **Exploit** contract.
    - The exploit will perform the flash loan, deposit, withdrawal, and final transfer to the recovery address.
 
-5. **Verification**  
+5. **Verification**
    - Confirm that the pool's balance is now 0 ETH.
    - Verify that the recovery account now holds 1000 ETH.
 
