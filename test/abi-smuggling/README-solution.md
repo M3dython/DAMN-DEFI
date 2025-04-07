@@ -97,7 +97,6 @@ The function outlines each step involved in building the exploit payload, includ
 
    ```bash
    git clone <this-repo-url>
-   cd exploit-contract
    npm install
    ```
 

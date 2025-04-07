@@ -113,7 +113,6 @@ The vulnerability stems from executing operations before validating their legiti
 
    ```bash
    git clone <this-repo-url>
-   cd climber-exploit
    forge install
    ```
 

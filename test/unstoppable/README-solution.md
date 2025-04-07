@@ -95,7 +95,6 @@ To cause the vault’s `flashLoan()` function to fail by making `convertToShares
 
    ```bash
    git clone <this-repo-url>
-   cd unstoppable-challenge
    forge install
    ```
 
@@ -106,8 +105,6 @@ To cause the vault’s `flashLoan()` function to fail by making `convertToShares
    ```bash
    forge build
    ```
-
-   _(Adapt for your chosen tool as needed.)_
 
 3. **Deploy the Contracts**
 

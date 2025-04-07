@@ -82,7 +82,6 @@ The goal of the exploit is to:
 
    ```bash
    git clone <this-repo-url>
-   cd side-entrance-exploit
    npm install
    ```
 
@@ -94,14 +93,11 @@ The goal of the exploit is to:
 
 2. **Compile the Contracts**
 
-   - For Hardhat/Truffle:
-     ```bash
-     npx hardhat compile
-     ```
+   ````
    - For Foundry:
-     ```bash
-     forge build
-     ```
+   ```bash
+   forge build
+   ````
 
 3. **Deploy the Contracts**
 

@@ -111,7 +111,6 @@ The vulnerability stems from the centralized trust model where a small number of
 
    ```bash
    git clone <this-repo-url>
-   cd compromised-exploit
    forge install
    ```
 

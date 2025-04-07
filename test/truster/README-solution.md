@@ -9,13 +9,16 @@ This repository contains a vulnerable flashloan pool contract, **TrusterLenderPo
 
 ## Table of Contents
 
-1. [Overview](#overview)  
-2. [Vulnerability Details](#vulnerability-details)  
-3. [How the Exploit Works](#how-the-exploit-works)  
-4. [Key Contract Components](#key-contract-components)  
-5. [Setup and Usage](#setup-and-usage)  
-6. [Security Considerations](#security-considerations)  
-7. [License](#license)
+- [Truster Challenge](#truster-challenge)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Vulnerability Details](#vulnerability-details)
+  - [How the Exploit Works](#how-the-exploit-works)
+  - [Key Contract Components](#key-contract-components)
+    - [`TrusterLenderPool`](#trusterlenderpool)
+    - [`Exploit` Contract](#exploit-contract)
+  - [Setup and Usage](#setup-and-usage)
+  - [Security Considerations](#security-considerations)
 
 ---
 
@@ -43,6 +46,7 @@ The vulnerability lies in the `flashLoan()` function of the pool. This function 
 
 1. **Initiating the Flashloan:**  
    The attacker calls `flashLoan()` with a loan amount of zero (or any amount), specifying:
+
    - **Borrower:** The attacker’s own address.
    - **Target:** The address of the DVT token contract.
    - **Data:** A crafted payload that encodes a call to `approve(address spender, uint256 amount)`.
@@ -66,6 +70,7 @@ The vulnerability lies in the `flashLoan()` function of the pool. This function 
 
 - **Constructor:**  
   Executes the exploit in its constructor:
+
   - Constructs the calldata to call `approve(address,uint256)` on the token contract.
   - Calls `flashLoan()` with this crafted data.
   - Uses the newly granted approval to transfer the tokens from the pool to the recovery account.
@@ -77,27 +82,32 @@ The vulnerability lies in the `flashLoan()` function of the pool. This function 
 
 ## Setup and Usage
 
-1. **Clone the Repository & Install Dependencies**  
+1. **Clone the Repository & Install Dependencies**
+
    ```bash
    git clone <this-repo-url>
-   cd truster-challenge
    npm install
    ```
+
    Or if using Foundry:
+
    ```bash
    forge install
    ```
 
-2. **Compile the Contracts**  
-   - **Hardhat/Truffle:** `npx hardhat compile`  
+2. **Compile the Contracts**
+
+   - **Hardhat/Truffle:** `npx hardhat compile`
    - **Foundry:** `forge build`
 
-3. **Deploy the Contracts**  
+3. **Deploy the Contracts**
+
    - Deploy the `DamnValuableToken` contract.
    - Deploy the `TrusterLenderPool` and fund it with 1 million DVT tokens.
    - Deploy the `Exploit` contract by passing the pool address, token address, and recovery account address to its constructor.
 
    Example using a Hardhat script:
+
    ```js
    const Exploit = await ethers.getContractFactory("Exploit");
    const exploit = await Exploit.deploy(
@@ -110,10 +120,12 @@ The vulnerability lies in the `flashLoan()` function of the pool. This function 
 
 4. **Run the Test**  
    Execute the test case which validates:
+
    - Only one transaction is executed by the player.
    - All tokens have been transferred from the pool to the recovery account.
 
    The test snippet:
+
    ```solidity
    function test_truster() public checkSolvedByPlayer {
        Exploit exploit = new Exploit(address(pool), address(token), address(recovery));

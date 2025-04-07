@@ -107,7 +107,6 @@ In essence, the vulnerability lies in the registry not detecting that the wallet
 
    ```bash
    git clone <this-repo-url>
-   cd backdoor-exploit
    forge install
    ```
 
